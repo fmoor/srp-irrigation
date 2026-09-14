@@ -1,13 +1,16 @@
 [project]
 name = "srp-irrigation"
 version = "0.1.0"
-description = "Add your description here"
+description = "Scrape SRP flood irrigation schedules"
 readme = "README.md"
 authors = [
     { name = "fmoor", email = "mailfrederickmoor@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "duckdb>=1.3",
+    "playwright>=1.55",
+]
 
 [project.scripts]
 srp-irrigation = "srp_irrigation:main"
