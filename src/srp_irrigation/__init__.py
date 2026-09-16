@@ -1,3 +1,3 @@
-from .main import main
+from .api import main
 
 __all__ = ["main"]
