@@ -1,5 +1,6 @@
 import datetime
 import typing
+from urllib.parse import quote
 
 import duckdb
 import requests
@@ -9,6 +10,7 @@ from . import browser
 SUBDIVISIONS_URL = "https://water.gateway.srpnet.com/subdivisions/getsubdivisions/false"
 SCHEDULE_URL = "https://water.gateway.srpnet.com/schedule/subdivision"
 DATABASE_PATH = "data/srp-api.duckdb"
+ADDRESS_SEARCH_URL = "https://water.gateway.srpnet.com/customer/address/search"
 
 
 class Subdivision(typing.TypedDict):
@@ -24,6 +26,12 @@ class ScheduleDetail(typing.TypedDict):
 class Schedule(typing.TypedDict):
     subdivisionId: int
     scheduleDetails: list[ScheduleDetail]
+
+
+class Address(typing.TypedDict):
+    waterAccountNumber: str
+    completeAddress: str
+    subdivisionId: int
 
 
 def migrate(con: duckdb.DuckDBPyConnection):
@@ -155,6 +163,13 @@ def get_schedule(subdivision: Subdivision) -> Schedule:
     rsp.raise_for_status()
     browser.human_delay()
     return typing.cast(Schedule, rsp.json())
+
+
+def get_address(address: str) -> Address:
+    rsp = requests.get(f"{ADDRESS_SEARCH_URL}/{quote(address)}")
+    rsp.raise_for_status()
+    browser.human_delay()
+    return typing.cast(Address, rsp.json())
 
 
 def now() -> datetime.datetime:
